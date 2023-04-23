@@ -27,8 +27,10 @@ class _ProductScreenBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final productForm = Provider.of<ProductFormProvider>(context);
     return Scaffold(
       body: SingleChildScrollView(
+        // keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         child: Column(
           children: [
             Stack(
@@ -64,8 +66,11 @@ class _ProductScreenBody extends StatelessWidget {
       floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.save_outlined),
-        onPressed: () {
+        onPressed: () async {
           //TODO : GUARDAR PRODUCTO
+          if (!productForm.isValidForm()) return;
+
+          await productService.saveOrCreateProduct(productForm.product);
         },
       ),
     );
@@ -85,6 +90,8 @@ class _ProductForm extends StatelessWidget {
         width: double.infinity,
         decoration: _buildBoxDecoration(),
         child: Form(
+          autovalidateMode: AutovalidateMode.onUserInteraction,
+          key: productForm.formKey,
           child: Column(
             children: [
               const SizedBox(height: 10),
@@ -100,7 +107,11 @@ class _ProductForm extends StatelessWidget {
               ),
               const SizedBox(height: 30),
               TextFormField(
-                initialValue: product.price.toString(),
+                initialValue: '${product.price}',
+                inputFormatters: [
+                  FilteringTextInputFormatter.allow(
+                      RegExp(r'^(\d+)?\.?\d{0,2}'))
+                ], // formato para que el "price" sea un valor númerico con un punto y máximo dos decimales
                 onChanged: (value) {
                   if (double.tryParse(value) == null) {
                     product.price = 0;
@@ -117,7 +128,7 @@ class _ProductForm extends StatelessWidget {
                   value: product.available,
                   title: const Text('Disponible'),
                   activeColor: Colors.indigo,
-                  onChanged: (value) {}),
+                  onChanged: productForm.updateAvailability),
               const SizedBox(height: 30),
             ],
           ),
