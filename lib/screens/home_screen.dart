@@ -3,6 +3,7 @@ import 'package:productos_app/screens/loading_screen.dart';
 import 'package:productos_app/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 
+import '../models/models.dart';
 import '../services/services.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -27,8 +28,13 @@ class HomeScreen extends StatelessWidget {
           ),
         ),
       ),
-      floatingActionButton:
-          FloatingActionButton(onPressed: () {}, child: const Icon(Icons.add)),
+      floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            productsService.selectedProduct =
+                new Product(available: false, name: '', price: 0);
+            Navigator.pushNamed(context, 'product');
+          },
+          child: const Icon(Icons.add)),
     );
   }
 }

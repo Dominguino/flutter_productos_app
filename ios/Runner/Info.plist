@@ -4,6 +4,16 @@
 <dict>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
+
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Acceso a la libreria</string>
+
+	<key>NSCameraUsageDescription</key>
+	<string>Acceso a la camara</string>
+
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Acceso al microfono</string>
+
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>

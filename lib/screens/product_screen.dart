@@ -5,6 +5,7 @@ import 'package:productos_app/services/products_services.dart';
 import 'package:productos_app/ui/input_decorations.dart';
 import 'package:productos_app/widgets/widgets.dart';
 import 'package:provider/provider.dart';
+import 'package:image_picker/image_picker.dart';
 
 class ProductScreen extends StatelessWidget {
   @override
@@ -49,8 +50,19 @@ class _ProductScreenBody extends StatelessWidget {
                   top: 60,
                   right: 20,
                   child: IconButton(
-                    onPressed: () {
+                    onPressed: () async {
                       // TODO: CAMARA A GALERÍA
+                      final picker = new ImagePicker();
+                      final PickedFile? pickedFile = await picker.getImage(
+                          source: ImageSource.camera, imageQuality: 100);
+                      if (pickedFile == null) {
+                        print('No seleccionó nada');
+                        return;
+                      } else {
+                        print('tenemos imagen ${pickedFile.path}');
+                        productService
+                            .updateSelectedProductImage(pickedFile.path);
+                      }
                     },
                     icon: const Icon(Icons.camera_alt_outlined,
                         size: 40, color: Colors.white),
