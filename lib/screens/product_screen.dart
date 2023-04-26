@@ -55,11 +55,11 @@ class _ProductScreenBody extends StatelessWidget {
                       final picker = new ImagePicker();
                       final PickedFile? pickedFile = await picker.getImage(
                           source: ImageSource.camera, imageQuality: 100);
+                      // source: ImageSource.gallery;
                       if (pickedFile == null) {
                         print('No seleccionó nada');
                         return;
                       } else {
-                        print('tenemos imagen ${pickedFile.path}');
                         productService
                             .updateSelectedProductImage(pickedFile.path);
                       }
@@ -77,13 +77,19 @@ class _ProductScreenBody extends StatelessWidget {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
       floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.save_outlined),
-        onPressed: () async {
-          //TODO : GUARDAR PRODUCTO
-          if (!productForm.isValidForm()) return;
+        child: productService.isSaving
+            ? CircularProgressIndicator(color: Colors.white)
+            : const Icon(Icons.save_outlined),
+        onPressed: productService.isSaving
+            ? null
+            : () async {
+                //TODO : GUARDAR PRODUCTO
+                if (!productForm.isValidForm()) return;
+                final String? imageUrl = await productService.uploadImage();
+                if (imageUrl != null) productForm.product.picture = imageUrl;
 
-          await productService.saveOrCreateProduct(productForm.product);
-        },
+                await productService.saveOrCreateProduct(productForm.product);
+              },
       ),
     );
   }
